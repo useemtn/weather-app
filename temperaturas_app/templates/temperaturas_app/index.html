@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Temperaturas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Gestión de Temperaturas</h1>
+
+        <div class="text-center mt-4">
+            <form method="post" action="{% url 'borrar_bd' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Borrar Base de Datos</button>
+            </form>
+            <form method="post" action="{% url 'insertar_paises' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Insertar Países</button>
+            </form>
+            <form method="post" action="{% url 'insertar_fronteras' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Insertar Fronteras</button>
+            </form>
+            <form method="post" action="{% url 'insertar_temperaturas' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-warning">Insertar Temperaturas</button>
+            </form>
+            <button id="mostrarTemperaturasBtn" class="btn btn-info">Mostrar Temperaturas</button>
+        </div>
+
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                <form id="buscarPaisForm">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" id="nombre_pais" name="nombre_pais" class="form-control" placeholder="Buscar país..." required>
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="resultadoModal" tabindex="-1" aria-labelledby="resultadoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultadoModalLabel">Resultados de la Búsqueda</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="temperaturasModal" tabindex="-1" aria-labelledby="temperaturasModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="temperaturasModalLabel">Listado de Temperaturas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="temperaturasBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Manejar búsqueda de país
+            $('#buscarPaisForm').on('submit', function(e) {
+                e.preventDefault();
+                var nombrePais = $('#nombre_pais').val();
+
+                $.ajax({
+                    url: '{% url "mostrar_temperatura" %}',
+                    type: 'POST',
+                    data: {
+                        'nombre_pais': nombrePais,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        $('#modalBody').html(response.html);
+                        $('#resultadoModal').modal('show');
+                    },
+                    error: function() {
+                        $('#modalBody').html('<p>Error al buscar el país.</p>');
+                        $('#resultadoModal').modal('show');
+                    }
+                });
+            });
+
+            // Manejar el botón para mostrar temperaturas
+            $('#mostrarTemperaturasBtn').on('click', function() {
+                $.ajax({
+                    url: '{% url "obtener_temperaturas" %}',
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        $('#temperaturasBody').html(response.html);
+                        $('#temperaturasModal').modal('show');
+                    },
+                    error: function() {
+                        $('#temperaturasBody').html('<p>Error al obtener temperaturas.</p>');
+                        $('#temperaturasModal').modal('show');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

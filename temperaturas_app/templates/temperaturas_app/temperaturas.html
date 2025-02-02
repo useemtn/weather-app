@@ -1,0 +1,30 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>País</th>
+            <th>Fecha y Hora</th>
+            <th>Temperatura (°C)</th>
+            <th>Sensación Térmica (°C)</th>
+            <th>Mínima (°C)</th>
+            <th>Máxima (°C)</th>
+            <th>Humedad (%)</th>
+            <th>Amanecer</th>
+            <th>Atardecer</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for temperatura in temperaturas %}
+        <tr>
+            <td>{{ temperatura.idpais.nombre }}</td>
+            <td>{{ temperatura.timestamp }}</td>
+            <td>{{ temperatura.temperatura }}</td>
+            <td>{{ temperatura.sensacion }}</td>
+            <td>{{ temperatura.minima }}</td>
+            <td>{{ temperatura.maxima }}</td>
+            <td>{{ temperatura.humedad }}</td>
+            <td>{{ temperatura.amanecer }}</td>
+            <td>{{ temperatura.atardecer }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

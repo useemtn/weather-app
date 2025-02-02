@@ -1,0 +1,47 @@
+<h2>Temperatura en {{ pais.nombre }}</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Temperatura (°C)</th>
+            <th>Sensación Térmica (°C)</th>
+            <th>Humedad (%)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for temp in temperaturas %}
+        <tr>
+            <td>{{ temp.timestamp }}</td>
+            <td>{{ temp.temperatura }}</td>
+            <td>{{ temp.sensacion }}</td>
+            <td>{{ temp.humedad }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Paises Fronterizos y sus Temperaturas</h3>
+{% if temperaturas_fronteras %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>País Fronterizo</th>
+                <th>Temperatura (°C)</th>
+                <th>Sensación Térmica (°C)</th>
+                <th>Humedad (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for frontera in temperaturas_fronteras %}
+            <tr>
+                <td>{{ frontera.pais.nombre }}</td>
+                <td>{{ frontera.temperatura.temperatura }}</td>
+                <td>{{ frontera.temperatura.sensacion }}</td>
+                <td>{{ frontera.temperatura.humedad }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No se encontraron temperaturas para los países fronterizos.</p>
+{% endif %}
